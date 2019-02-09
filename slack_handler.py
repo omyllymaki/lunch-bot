@@ -1,11 +1,11 @@
+import logging
 import re
 import time
-import logging
 from typing import Tuple, Optional, List, Any
 
 from slackclient import SlackClient
 
-from crawlers.roots_crawler import RootsCrawler
+from crawlers.turku_lunch_crawler import TurkuLunchCrawler
 
 logger = logging.getLogger(__name__)
 
@@ -65,11 +65,11 @@ class SlackHandler:
         if self._is_item_in_list(command, self.GREETINGS_COMMANDS):
             response_text = "Morjestaaa!"
         if self._is_item_in_list(command, self.MENU_COMMANDS):
-            response_text = "Printtaa kaikki lounasvaihtoehdot"
+            crawler = TurkuLunchCrawler()
+            data = crawler.crawl()
+            response_text = self._format_message_to_slack(data)
         if self._is_item_in_list(command, self.ROOTS_COMMANDS):
-            crawler = RootsCrawler()
-            response = crawler.crawl()
-            response_text = self._format_message_to_slack(response)
+            response_text = "Tulossa..."
         self.post_message(channel=channel, message=response_text)
 
     def _is_message_to_bot(self, user_id: str) -> bool:
@@ -83,10 +83,11 @@ class SlackHandler:
         return any([target_item.startswith(item) for item in item_list])
 
     @staticmethod
-    def _format_message_to_slack(json: Any) -> str:
+    def _format_message_to_slack(data: Any) -> str:
         formatted_text = ""
-        for menu_type, lunch_options in json.items():
-            formatted_text += "*" + menu_type + "*" + "\n"
-            for option in lunch_options:
-                formatted_text += "•" + option + "\n"
+        for header, options in data.items():
+            formatted_text += '\n'
+            formatted_text += f'*{header}*' + '\n'
+            for option in options:
+                formatted_text += f'•{option}' + '\n'
         return formatted_text
