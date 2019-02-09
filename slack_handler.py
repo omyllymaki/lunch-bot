@@ -13,8 +13,8 @@ logger = logging.getLogger(__name__)
 class SlackHandler:
     RTM_READ_DELAY = 1
     GREETINGS_COMMANDS = ["moi", "moro", "terve"]
-    MENU_COMMANDS = ["lounaat", "lounaslistat"]
-    ROOTS_COMMANDS = ["roots"]
+    ALL_RESTAURANTS_COMMANDS = ["lounaat", "lounaslistat"]
+    SINGLE_RESTAURANT_COMMANDS = ["lounas"]
     MENTION_REGEX = "^<@(|[WU].+?)>(.*)"
 
     def __init__(self, token: str):
@@ -61,15 +61,19 @@ class SlackHandler:
         return (matches.group(1), matches.group(2).strip()) if matches else (None, None)
 
     def _handle_command(self, command: str, channel: str) -> None:
-        response_text = f"Mitä meinaat? Kokeile vaikkapa jotain näistä: {self.MENU_COMMANDS}"
+        response_text = f"Mitä meinaat? Kokeile vaikkapa jotain näistä: {self.ALL_RESTAURANTS_COMMANDS}"
         if self._is_item_in_list(command, self.GREETINGS_COMMANDS):
             response_text = "Morjestaaa!"
-        if self._is_item_in_list(command, self.MENU_COMMANDS):
+        if self._is_item_in_list(command, self.ALL_RESTAURANTS_COMMANDS):
             crawler = TurkuLunchCrawler()
             data = crawler.crawl()
             response_text = self._format_message_to_slack(data)
-        if self._is_item_in_list(command, self.ROOTS_COMMANDS):
-            response_text = "Tulossa..."
+        if self._is_item_in_list(command, self.SINGLE_RESTAURANT_COMMANDS):
+            restaurant = ' '.join(command.split()[1:])
+            crawler = TurkuLunchCrawler()
+            data = crawler.crawl()
+            data_for_restaurant = data[restaurant]
+            response_text = self._format_message_to_slack({restaurant: data_for_restaurant})
         self.post_message(channel=channel, message=response_text)
 
     def _is_message_to_bot(self, user_id: str) -> bool:
