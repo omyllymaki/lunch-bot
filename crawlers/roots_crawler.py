@@ -1,6 +1,6 @@
 from typing import Dict, List
 
-from collectors.base_crawler import BaseCrawler
+from crawlers.base_crawler import BaseCrawler
 
 
 class RootsCrawler(BaseCrawler):

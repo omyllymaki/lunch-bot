@@ -5,7 +5,7 @@ from typing import Tuple, Optional, List, Any
 
 from slackclient import SlackClient
 
-from collectors.roots_crawler import RootsCrawler
+from crawlers.roots_crawler import RootsCrawler
 
 logger = logging.getLogger(__name__)
 
