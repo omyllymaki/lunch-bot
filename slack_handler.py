@@ -72,7 +72,7 @@ class SlackHandler:
             restaurant = ' '.join(command.split()[1:])
             crawler = TurkuLunchCrawler()
             data = crawler.crawl()
-            data_for_restaurant = data[restaurant]
+            data_for_restaurant = data.get(restaurant, ['Ravintolalle ei löydy tietoja'])
             response_text = self._format_message_to_slack({restaurant: data_for_restaurant})
         self.post_message(channel=channel, message=response_text)
 
