@@ -106,3 +106,4 @@ ENV/
 # Other
 .idea/
 git_ignore_this_dir
+config.py
