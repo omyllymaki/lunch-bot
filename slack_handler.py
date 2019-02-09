@@ -5,7 +5,7 @@ from typing import Tuple, Optional, List, Any
 
 from slackclient import SlackClient
 
-from crawlers.turku_lunch_crawler import TurkuLunchCrawler
+from turku_lunch_crawler import TurkuLunchCrawler
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +27,7 @@ class SlackHandler:
             self.bot_id = self._get_user_id()
 
             while True:
-                slack_events = self._get_slack_event()
+                slack_events = self._get_slack_events()
                 command, channel = self._parse_bot_commands(slack_events)
                 if command:
                     self._handle_command(command, channel)
@@ -42,7 +42,7 @@ class SlackHandler:
             text=message
         )
 
-    def _get_slack_event(self):
+    def _get_slack_events(self):
         return self.slack_client.rtm_read()
 
     def _get_user_id(self) -> str:
