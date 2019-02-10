@@ -89,13 +89,13 @@ class SlackHandler:
 
     def _handle_single_lunch_option(self, command: str) -> str:
         restaurant = ' '.join(command.split()[1:])
-        data = self.crawler.crawl()
+        data = self._get_lunch_data()
         data_for_restaurant = data.get(restaurant, ['Ravintolalle ei löydy tietoja'])
         response_text = self._format_message_to_slack({restaurant: data_for_restaurant})
         return response_text
 
     def _handle_all_lunch_options(self) -> str:
-        data = self.crawler.crawl()
+        data = self._get_lunch_data()
         response_text = self._format_message_to_slack(data)
         return response_text
 
@@ -108,6 +108,14 @@ class SlackHandler:
         else:
             logger.error("Slack bot connection failed!")
             raise SlackClientConnectionFailed
+
+    def _get_lunch_data(self):
+        try:
+            data = self.crawler.crawl()
+        except Exception as e:
+            logger.error(f'Data crawling failed. Error message: {e}')
+            data = {'Virhe': ['Tietojen hakemisessa tapahtui virhe']}
+        return data
 
     @staticmethod
     def _format_message_to_slack(data: Any) -> str:
