@@ -16,6 +16,7 @@ class SlackHandler:
     RTM_READ_DELAY = 1
     MENTION_REGEX = "^<@(|[WU].+?)>(.*)"
     COMMANDS = {
+        'instructions': ["ohje", "ohjeet"],
         'greeting': ["moi", "moro", "terve"],
         'all_lunch_options': ["lounaat", "lounaslistat"],
         'single_lunch_option': ["lounas"],
@@ -68,6 +69,8 @@ class SlackHandler:
     def _handle_command(self, command: str, channel: str) -> None:
         response_text = f"Mitä meinaat? Kokeile jotain näistä: {self.COMMANDS}"
         first_word = command.split()[0].lower()
+        if first_word in self.COMMANDS['instructions']:
+            response_text = self._handle_instructions()
         if first_word in self.COMMANDS['greeting']:
             response_text = self._handle_greeting()
         if first_word in self.COMMANDS['all_lunch_options']:
@@ -75,6 +78,10 @@ class SlackHandler:
         if first_word in self.COMMANDS['single_lunch_option']:
             response_text = self._handle_single_lunch_option(command)
         self.post_message(channel=channel, message=response_text)
+
+    def _handle_instructions(self):
+        response_text = f'Hei! Olen avulias lounasbotti, joka kertoo, mistä saa Turun parhaat sapuskat. Vastaan kutsuihin, jotka ovat muotoa @MinunNimeni kutsu. Tällä hetkellä tuettuja kutsuja ovat: {self.COMMANDS}.'
+        return response_text
 
     def _handle_greeting(self):
         options = ['Morjestaa', 'Moro', 'Hei']
