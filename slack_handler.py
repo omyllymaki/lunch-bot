@@ -67,7 +67,7 @@ class SlackHandler:
 
     def _handle_command(self, command: str, channel: str) -> None:
         response_text = f"Mitä meinaat? Kokeile jotain näistä: {self.COMMANDS}"
-        first_word = command.split()[0]
+        first_word = command.split()[0].lower()
         if first_word in self.COMMANDS['greeting']:
             response_text = self._handle_greeting()
         if first_word in self.COMMANDS['all_lunch_options']:
