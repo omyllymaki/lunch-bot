@@ -1,6 +1,6 @@
 import logging
 
-from slack_handler import SlackHandler
+from slack_bot.lunch_bot import LunchBot
 import os
 from dotenv import load_dotenv
 
@@ -10,7 +10,7 @@ SLACK_BOT_TOKEN = os.environ.get("SLACK_BOT_TOKEN", None)
 
 
 def main():
-    slack_handler = SlackHandler(SLACK_BOT_TOKEN)
+    slack_handler = LunchBot(SLACK_BOT_TOKEN)
     slack_handler.activate_bot()
 
 

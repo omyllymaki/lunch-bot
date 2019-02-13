@@ -5,7 +5,7 @@ from selenium import webdriver
 from selenium.common.exceptions import ElementClickInterceptedException
 
 
-class TurkuLunchCrawler:
+class LunchCrawler:
     URL = 'https://www.lounaat.info/turku'
 
     def crawl(self) -> Dict[str, List[str]]:
