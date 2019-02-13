@@ -65,9 +65,17 @@ class LunchBot(BaseBot):
         return response_text
 
     def _get_lunch_data(self):
-        try:
-            data = self.crawler.crawl()
-        except Exception as e:
-            logger.error(f'Data crawling failed. Error message: {e}')
+        data = self.crawler.crawl()
+        if not data:
             data = {'Virhe': ['Tietojen hakemisessa tapahtui virhe']}
         return data
+
+    @staticmethod
+    def _format_message_to_slack(data: dict) -> str:
+        formatted_text = ""
+        for header, options in data.items():
+            formatted_text += '\n'
+            formatted_text += f'*{header}*' + '\n'
+            for option in options:
+                formatted_text += f'•{option}' + '\n'
+        return formatted_text

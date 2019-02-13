@@ -2,7 +2,7 @@ import logging
 import re
 import time
 from abc import abstractmethod
-from typing import Tuple, Optional, Any
+from typing import Tuple, Optional
 
 from slackclient import SlackClient
 
@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 class BaseBot:
-    RTM_READ_DELAY = 1
+    RTM_READ_DELAY = 0.5
     MENTION_REGEX = "^<@(|[WU].+?)>(.*)"
 
     def __init__(self, token: str):
@@ -21,7 +21,7 @@ class BaseBot:
         self._check_connection()
         self.bot_id = self._get_user_id()
 
-    def activate_bot(self):
+    def activate(self):
         logger.info("Slack bot running!")
         while True:
             slack_events = self._get_slack_events()
@@ -66,16 +66,6 @@ class BaseBot:
         else:
             logger.error("Slack bot connection failed!")
             raise SlackClientConnectionFailed
-
-    @staticmethod
-    def _format_message_to_slack(data: Any) -> str:
-        formatted_text = ""
-        for header, options in data.items():
-            formatted_text += '\n'
-            formatted_text += f'*{header}*' + '\n'
-            for option in options:
-                formatted_text += f'•{option}' + '\n'
-        return formatted_text
 
     @abstractmethod
     def handle_command(self, command: str, channel: str) -> None:

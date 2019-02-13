@@ -10,8 +10,8 @@ SLACK_BOT_TOKEN = os.environ.get("SLACK_BOT_TOKEN", None)
 
 
 def main():
-    slack_handler = LunchBot(SLACK_BOT_TOKEN)
-    slack_handler.activate_bot()
+    bot = LunchBot(SLACK_BOT_TOKEN)
+    bot.activate()
 
 
 if __name__ == "__main__":
