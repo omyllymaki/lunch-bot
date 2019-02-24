@@ -1,4 +1,6 @@
 import logging
+import os
+import sys
 from typing import Dict, List
 
 from bs4 import BeautifulSoup
@@ -6,6 +8,13 @@ from selenium import webdriver
 from selenium.common.exceptions import ElementClickInterceptedException
 
 logger = logging.getLogger(__name__)
+
+is_windows = hasattr(sys, 'getwindowsversion')
+print(is_windows)
+if is_windows:
+    geckodriver_path = os.path.join('data_collection', 'geckodriver.exe')
+else:
+    geckodriver_path = os.path.join('data_collection', 'geckodriver')
 
 
 class LunchCrawler:
@@ -35,7 +44,7 @@ class LunchCrawler:
         return data
 
     def _get_html_and_initialize_parser(self):
-        self.driver = webdriver.Firefox()
+        self.driver = webdriver.Firefox(executable_path=geckodriver_path)
         html_text = self._get_html_text()
         self.driver.close()
         self.parser = BeautifulSoup(html_text, 'html.parser')
