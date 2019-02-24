@@ -10,7 +10,6 @@ from selenium.common.exceptions import ElementClickInterceptedException
 logger = logging.getLogger(__name__)
 
 is_windows = hasattr(sys, 'getwindowsversion')
-print(is_windows)
 if is_windows:
     geckodriver_path = os.path.join('data_collection', 'geckodriver.exe')
 else:
